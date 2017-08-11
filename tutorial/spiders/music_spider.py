@@ -128,32 +128,33 @@ class MusicSpider(scrapy.Spider):
     def parse_comment(self,response):
         url = response.url
         song_id = url[url.rfind('_')+1:]
-        son_comment = json.loads(response.body)
+        json_comment = json.loads(response.body)
         total = json_comment.get('total', 0)
 
         song_comment_count = SongCommentCountItem()
-        song_comment_count.total = total
-        song_comment_count.song_id = song_id
+        song_comment_count['total'] = total
+        song_comment_count['song_id'] = song_id
         yield song_comment_count
 
         hot_comments = json_comment['hotComments']
         for item in hot_comments:
             comment = CommentItem()
-            comment.song_id = int(song_id)
+            comment['song_id'] = song_id
+
             try:
                 highpoints = re.compile(u'[\U00010000-\U0010ffff]')
             except re.error:
                 highpoints = re.compile(u'[\uD800-\uDBFF][\uDC00-\uDFFF]')
 
             content = highpoints.sub(u'??', item['content'])
-            comment.content = content[:300]
-            comment.liked_count = int(item['likedCount'])
+            comment['content'] = content[:300]
+            comment['liked_count'] = int(item['likedCount'])
             timestamp = str(item['time'])
-            comment.timestamp = time.strftime('%Y%m%d%H%M%S',
+            comment['timestamp'] = time.strftime('%Y%m%d%H%M%S',
                                               time.localtime(float(timestamp[:10] + '.' + timestamp[-3:])))
             comment_user = item.get('user')
             if comment_user:
-                comment.user_id = int(comment_user.get('userId', 0))
-                comment.nickname = comment_user.get('nickname')
+                comment['user_id'] = int(comment_user.get('userId', 0))
+                comment['nickname'] = comment_user.get('nickname')
             yield comment
 
