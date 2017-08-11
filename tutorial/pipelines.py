@@ -51,7 +51,6 @@ class MongoPipeline(object):
         else:
             song_id = int(item['song_id'])
             song_item = self.db.song.find_one({'id':song_id})
-            print song_item
             self.db.song.update_one({
                 '_id': song_item['_id']
             }, {
