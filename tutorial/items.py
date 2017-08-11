@@ -65,6 +65,6 @@ class CommentItem(scrapy.Item):
     user_id = scrapy.Field()
     nickname = scrapy.Field()
 
-class SongCommentCountItem():
+class SongCommentCountItem(scrapy.Item):
     song_id = scrapy.Field()
     total = scrapy.Field()

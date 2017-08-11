@@ -49,8 +49,9 @@ class MongoPipeline(object):
         elif isinstance(item, CommentItem):
             self.db['comment'].insert(dict(item))
         else:
-            song_id = item['songid']
-            song_item = self.db.song.find_ond({'id':song_id})
+            song_id = int(item['song_id'])
+            song_item = self.db.song.find_one({'id':song_id})
+            print song_item
             self.db.song.update_one({
                 '_id': song_item['_id']
             }, {
