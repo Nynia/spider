@@ -15,6 +15,10 @@ class MusicSpider(scrapy.Spider):
             yield scrapy.Request(url,self.parse)
 
     def parse(self, response):
+        if response.status != 200:
+            req = response.request
+            req.meta["change_proxy"] = True
+            yield req
         soup = BeautifulSoup(response.body, 'html.parser')
         for item in soup.find_all(class_='cat-flag'):
             href = item['href']
@@ -33,6 +37,10 @@ class MusicSpider(scrapy.Spider):
                     yield scrapy.Request(next, self.parse_artist_category)
 
     def parse_artist_category(self,response):
+        if response.status != 200:
+            req = response.request
+            req.meta["change_proxy"] = True
+            yield req
         soup = BeautifulSoup(response.body, 'html.parser')
         for item in soup.find_all('a'):
             match = re.match('/artist\?id=(\d+)$', item['href'])
@@ -50,6 +58,10 @@ class MusicSpider(scrapy.Spider):
                 yield scrapy.Request(next, self.parse_artist)
 
     def parse_artist(self,response):
+        if response.status != 200:
+            req = response.request
+            req.meta["change_proxy"] = True
+            yield req
         soup = BeautifulSoup(response.body, 'html.parser')
         for item in soup.find_all(id='m-song-module'):
             album_li_list = item.find_all('li')
@@ -62,6 +74,10 @@ class MusicSpider(scrapy.Spider):
                     yield scrapy.Request(next, self.parse_album)
 
     def parse_album(self,response):
+        if response.status != 200:
+            req = response.request
+            req.meta["change_proxy"] = True
+            yield req
         soup = BeautifulSoup(response.body, 'html.parser')
         for item in soup.find_all('a', href=re.compile('\/song\?id=\d+')):
             song_href = item['href']
@@ -72,6 +88,10 @@ class MusicSpider(scrapy.Spider):
                 yield scrapy.Request(next, self.parse_song)
 
     def parse_song(self,response):
+        if response.status != 200:
+            req = response.request
+            req.meta["change_proxy"] = True
+            yield req
         try:
             song = json.loads(response.body)
         except:
@@ -126,6 +146,10 @@ class MusicSpider(scrapy.Spider):
             yield scrapy.FormRequest(url=next,formdata={"params": params,"encSecKey": encSecKey},callback=self.parse_comment)
 
     def parse_comment(self,response):
+        if response.status != 200:
+            req = response.request
+            req.meta["change_proxy"] = True
+            yield req
         url = response.url
         song_id = url[url.rfind('_')+1:]
         json_comment = json.loads(response.body)

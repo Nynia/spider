@@ -70,6 +70,14 @@ ROBOTSTXT_OBEY = True
 ITEM_PIPELINES = {
     'tutorial.pipelines.MongoPipeline': 800,
 }
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware': 350,
+    'scrapy.contrib.downloadermiddleware.retry.RetryMiddleware': 351,
+    # put this middleware after RetryMiddleware
+    'crawler.middleware.HttpProxyMiddleware': 999,
+}
+
+DOWNLOAD_TIMEOUT = 10           # 10-15 second is an experienmental reasonable timeout
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True
