@@ -55,6 +55,7 @@ class MusicSpider(scrapy.Spider):
                 yield item
 
                 next = self.base_url + '/artist/album?id=%s&limit=200' % artist_id
+                print next
                 yield scrapy.Request(next, self.parse_artist)
 
     def parse_artist(self,response):
@@ -71,6 +72,7 @@ class MusicSpider(scrapy.Spider):
                 if match:
                     alb_id = match.group(1)
                     next = self.base_url + '/album?id=%s' % alb_id
+                    print next
                     yield scrapy.Request(next, self.parse_album)
 
     def parse_album(self,response):
@@ -85,6 +87,7 @@ class MusicSpider(scrapy.Spider):
             if match:
                 song_id = match.group(1)
                 next = 'http://music.163.com/api/song/detail/?id=%s&ids=[%s]' % (song_id, song_id)
+                print next
                 yield scrapy.Request(next, self.parse_song)
 
     def parse_song(self,response):
